@@ -10,8 +10,13 @@ class TimeSeries(object):
 
     def __init__(self, meta, ts):
         self.ts = ts
-        self.name = meta['__name__']
-        del meta['__name__']
+
+        try:
+            self.name = meta['__name__']
+            del meta['__name__']
+        except KeyError:
+            self.name = ''
+
         self.metadata = meta
 
     def timestamps(self):

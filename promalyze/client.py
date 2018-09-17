@@ -15,8 +15,9 @@ class Client(object):
     Client object provides methods for fetching data from a Prometheus server
     """
 
-    def __init__(self, prometheus_url="http://localhost:9090"):
+    def __init__(self, prometheus_url="http://localhost:9090", auth=None):
         self.prometheus_url = prometheus_url if prometheus_url[-1:] != '/' else prometheus_url[:-1]
+        self._auth = auth
 
     def instant_query(self, metric, params=None):
         """
@@ -73,7 +74,7 @@ class Client(object):
         if params is None:
             params = {}
 
-        res = requests.get(self._full_url(resource), params)
+        res = requests.get(self._full_url(resource), params, auth=self._auth)
         return res.json()
 
     @staticmethod

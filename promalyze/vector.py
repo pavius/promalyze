@@ -8,8 +8,12 @@ class Vector(object):
     """
 
     def __init__(self, v):
-        self.name = v['metric']['__name__']
-        del v['metric']['__name__']
+        try:
+            self.name = v['metric']['__name__']
+            del v['metric']['__name__']
+        except:
+            self.name = ''
+
         self.metadata = v['metric']
         self.timestamp = v['value'][0]
         self.value = v['value'][1]
