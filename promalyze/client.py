@@ -1,7 +1,7 @@
 """
 Client module to fetch data from a Prometheus server
 """
-
+import os
 from datetime import datetime, timedelta
 import requests
 from promalyze.timeseries import TimeSeries
@@ -15,7 +15,19 @@ class Client(object):
     Client object provides methods for fetching data from a Prometheus server
     """
 
-    def __init__(self, prometheus_url="http://localhost:9090", auth=None):
+    def __init__(self, prometheus_url=None, auth=None):
+
+        # argument -> environment variable -> constant
+        prometheus_url = prometheus_url or os.environ.get('PROMETHEUS_URL', 'http://localhost:9090')
+
+        # if auth was passed use that. otherwise try the environment variables
+        if auth is None:
+            username = os.environ.get('PROMETHEUS_USERNAME')
+            password = os.environ.get('PROMETHEUS_PASSWORD')
+
+            if username and password:
+                auth = (username, password)
+
         self.prometheus_url = prometheus_url if prometheus_url[-1:] != '/' else prometheus_url[:-1]
         self._auth = auth
 
